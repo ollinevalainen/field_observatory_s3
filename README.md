@@ -1,5 +1,6 @@
 # Field Observatory S3 Utilities (field_observatory_s3)
-This package containes helper utilities to read the Field Observatory data in an S3 bucket at: https://field-observatory.data.lit.fmi.fi
+This package containes helper utilities to read the Field Observatory (https://www.fieldobservatory.org/) data in the S3 bucket at: https://field-observatory.data.lit.fmi.fi
+
 Index page: https://field-observatory.data.lit.fmi.fi/index.html
 
 ## Installation
