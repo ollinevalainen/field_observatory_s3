@@ -1,4 +1,4 @@
-# Field Observatory S3 Utilities (field_observataory_s3)
+# Field Observatory S3 Utilities (field_observatory_s3)
 This package containes helper utilities to read the Field Observatory data in an S3 bucket at: https://field-observatory.data.lit.fmi.fi
 Index page: https://field-observatory.data.lit.fmi.fi/index.html
 
@@ -15,6 +15,8 @@ harvest_dates_qvidja = bucket.get_harvest_dates("qvidja_ec")
 ```
 
 ## All available methods for FOBucket()
+The "field_id" parameter is the "id" blocks in the blocks GeoJSON (https://data.lit.fmi.fi/field-observatory/fieldobs_blocks_translated.geojson).
+
 ```python
     def list_files(self, prefix: str, return_key: bool = False) -> list:
 
@@ -55,3 +57,4 @@ harvest_dates_qvidja = bucket.get_harvest_dates("qvidja_ec")
 
 ## TODO
 - Add tests
+- Improve documentation
