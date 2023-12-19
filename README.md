@@ -10,7 +10,7 @@ pip install git+https://github.com/ollinevalainen/field_observatory_s3.git
 
 ## Usage
 ```python
-from field_observatory_s3 import FOBucket
+from field_observatory_s3.field_observatory_s3 import FOBucket
 bucket = FOBucket()
 harvest_dates_qvidja = bucket.get_harvest_dates("qvidja_ec")
 ```
