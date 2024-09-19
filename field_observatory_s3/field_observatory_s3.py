@@ -14,14 +14,17 @@ Functions:
 
 Author: Olli Nevalainen, Finnish Meteorological Institute
 """
+
 import os
 import json
+from typing import Optional, Union
 import pandas as pd
 import boto3
 from botocore import UNSIGNED
 from botocore.config import Config
 
 FO_BLOCK_GEOJSON = "fieldobs_blocks_translated.geojson"
+FO_SITE_GEOJSON = "fieldobs_sites_translated.geojson"
 
 
 class FOBucket:
@@ -488,6 +491,126 @@ class FOBucket:
         file_content = object.get()["Body"].read().decode("utf-8")
         block_json = json.loads(file_content)
         return block_json
+
+    def read_site_geojson(self) -> dict:
+        """
+        Read site geojson file from S3 bucket
+
+        Returns
+        -------
+        site_json : dict
+            Site geojson as dict
+        """
+        site_geojson = FO_SITE_GEOJSON
+        object = self.s3.Object(FOBucket.FO_BUCKET_NAME, site_geojson)
+        file_content = object.get()["Body"].read().decode("utf-8")
+        site_json = json.loads(file_content)
+        return site_json
+
+    def get_sites(self, site_type_filter: Optional[Union[list, str]] = None) -> list:
+        """
+        Get sites from the site geojson
+
+        Parameters
+        ----------
+        site_type_filter : list or str, optional
+            Site type filter
+
+        Returns
+        -------
+        sites : list
+            List of sites
+        """
+        if site_type_filter is not None:
+            if isinstance(site_type_filter, str):
+                site_type_filter = [site_type_filter]
+            elif isinstance(site_type_filter, list):
+                site_type_filter = site_type_filter
+            else:
+                raise ValueError("site_type_filter must be a string or a list")
+
+        site_json = self.read_site_geojson()
+        sites = []
+        for feature in site_json["features"]:
+            site = feature["properties"]["id"]
+            if site_type_filter is not None:
+                if feature["properties"]["site_type"] in site_type_filter:
+                    sites.append(site)
+            else:
+                sites.append(site)
+        return sites
+
+    def get_fields(
+        self,
+        site_filter: Optional[Union[list, str]] = None,
+        site_type_filter: Optional[Union[list, str]] = None,
+    ) -> list:
+        """
+        Get fields from the block geojson
+
+        Parameters
+        ----------
+        site_filter : list or str, optional
+            Site filter
+        site_type_filter : list or str, optional
+            Site type filter
+
+        Returns
+        -------
+        fields : list
+            List of fields
+        """
+        if site_filter is not None:
+            if isinstance(site_filter, str):
+                site_filter = [site_filter]
+            elif isinstance(site_filter, list):
+                site_filter = site_filter
+            else:
+                raise ValueError("site_filter must be a string or a list")
+
+        if site_type_filter is not None:
+            if isinstance(site_type_filter, str):
+                site_type_filter = [site_type_filter]
+            elif isinstance(site_type_filter, list):
+                site_type_filter = site_type_filter
+            else:
+                raise ValueError("site_type_filter must be a string or a list")
+
+        block_json = self.read_block_geojson()
+        fields = []
+        for feature in block_json["features"]:
+            field_within_filters = False
+            if site_filter is not None:
+                if feature["properties"]["site"] in site_filter:
+                    field_within_filters = True
+
+            if site_type_filter is not None:
+                if feature["properties"]["site_type"] in site_type_filter:
+                    field_within_filters = True
+
+            if site_filter is None and site_type_filter is None:
+                field_within_filters = True
+
+            if field_within_filters:
+                field = feature["properties"]["id"]
+                fields.append(field)
+        return fields
+
+    def get_site_types(self) -> list:
+        """
+        Get site types from the site geojson
+
+        Returns
+        -------
+        site_types : list
+            List of site types
+        """
+        site_json = self.read_site_geojson()
+        site_types = []
+        for feature in site_json["features"]:
+            site_type = feature["properties"]["site_type"]
+            site_types.append(site_type)
+        return site_types
 
     def get_field_information(self, field_id: str) -> dict:
         """
