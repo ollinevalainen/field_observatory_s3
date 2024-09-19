@@ -49,3 +49,12 @@ class TestFOBucket:
         # check that list contains the correct devices
         expected_devices = ["T12-2", "T12-1"]
         assert set(field_datasense_devices) == set(expected_devices)
+
+    def test_get_site_datasense_devices(self):
+        fo_bucket = FOBucket()
+        site_datasense_devices = fo_bucket.get_site_datasense_devices(
+            "ki", "precipitation_sensors"
+        )
+        # check that list contains the correct devices
+        expected_devices = ["RC-1"]
+        assert set(site_datasense_devices) == set(expected_devices)
