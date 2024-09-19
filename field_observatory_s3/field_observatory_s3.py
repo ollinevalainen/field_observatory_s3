@@ -436,7 +436,7 @@ class FOBucket:
             Dataframe of the timeseries data
         """
         prefix = field_id.replace("_", "/") + "/" + data_type
-        df = self.get_timeseries_data(prefix, data_type)
+        df = self.get_timeseries_data(prefix)
         return df
 
     def get_site_timeseries_data(self, site_id: str, data_type: str) -> pd.DataFrame:
@@ -456,7 +456,7 @@ class FOBucket:
             Dataframe of the timeseries data
         """
         prefix = site_id + "/" + data_type
-        df = self.get_timeseries_data(prefix, data_type)
+        df = self.get_timeseries_data(prefix)
         return df
 
     def get_timeseries_data(self, prefix: str) -> pd.DataFrame:
@@ -700,13 +700,12 @@ def read_files_to_dataframe(files) -> pd.DataFrame:
     df : pd.DataFrame
         Dataframe of the files
     """
-    for i, f in enumerate(files):
+    dfs = []
+    for f in files:
         tmp_df = pd.read_csv(f)
+        dfs.append(tmp_df)
 
-        if i == 0:
-            df = tmp_df
-        else:
-            df = pd.concat([df, tmp_df])
+    df = pd.concat(dfs)
     time_col = df.columns[0]
     df[time_col] = pd.to_datetime(df[time_col])
     df.set_index(time_col, drop=True, inplace=True)

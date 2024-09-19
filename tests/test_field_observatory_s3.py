@@ -58,3 +58,11 @@ class TestFOBucket:
         # check that list contains the correct devices
         expected_devices = ["RC-1"]
         assert set(site_datasense_devices) == set(expected_devices)
+
+    def test_get_site_timeseries_data(self):
+        import pandas as pd
+
+        fo_bucket = FOBucket()
+        df = fo_bucket.get_site_timeseries_data("ki", "fmimeteo")
+        assert isinstance(df, pd.DataFrame) == True
+        assert df.empty == False
