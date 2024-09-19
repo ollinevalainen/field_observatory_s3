@@ -40,3 +40,12 @@ class TestFOBucket:
         site_types = fo_bucket.get_site_types()
         assert isinstance(site_types, list) == True
         assert len(site_types) > 0
+
+    def test_get_field_datasense_devices(self):
+        fo_bucket = FOBucket()
+        field_datasense_devices = fo_bucket.get_field_datasense_devices(
+            "ki", "0", "soil_sensors"
+        )
+        # check that list contains the correct devices
+        expected_devices = ["T12-2", "T12-1"]
+        assert set(field_datasense_devices) == set(expected_devices)

@@ -663,6 +663,16 @@ class FOBucket:
         field_geometry = field_information["geometry"]
         return field_geometry
 
+    def get_field_datasense_devices(
+        self, site: str, field: str, device_type: str
+    ) -> list:
+        prefix = f"{site}/{field}/datasense/{device_type}"
+        files = self.list_files(prefix, return_key=True)
+        dirs = [s.split("/")[-2] for s in files]
+        # get unique dir names
+        dirs = list(set(dirs))
+        return dirs
+
 
 def csv_files(files):
     return [f for f in files if f.endswith(".csv")]
