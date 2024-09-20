@@ -477,6 +477,31 @@ class FOBucket:
         df = read_files_to_dataframe(files)
         return df
 
+    def get_field_satellite_timeseries_data(
+        self, field_id: str, variable: str
+    ) -> pd.DataFrame:
+        """
+        Get timeseries data for a given field and satellite variable
+
+        Parameters
+        ----------
+        field_id : str
+            Field ID
+        variable : str
+            Satellite variable, e.g. "ndvi", "lai", "ci_red_edge"
+
+        Returns
+        -------
+        df : pd.DataFrame
+            Dataframe of the timeseries data
+        """
+        variable = variable.lower()
+        data_prefix = field_id.replace("_", "/") + "/sentinel"
+        files = csv_files(self.list_files(data_prefix))
+        variable_files = [f for f in files if f"{variable}.csv" in f]
+        df = read_files_to_dataframe(variable_files)
+        return df
+
     def read_block_geojson(self) -> dict:
         """
         Read block geojson file from S3 bucket

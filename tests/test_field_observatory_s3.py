@@ -71,3 +71,12 @@ class TestFOBucket:
         fo_bucket = FOBucket()
         station_id = fo_bucket.get_site_fmi_weather_station_id("ki")
         assert station_id == 100967
+
+    def test_get_field_satellite_timeseries_data(self):
+        import pandas as pd
+
+        fo_bucket = FOBucket()
+        df = fo_bucket.get_field_satellite_timeseries_data("ki_0", "ndvi")
+        assert isinstance(df, pd.DataFrame) == True
+        assert df.empty == False
+        assert "ndvi" in df.columns
