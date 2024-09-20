@@ -681,6 +681,13 @@ class FOBucket:
         dirs = list(set(dirs))
         return dirs
 
+    def get_site_fmi_weather_station_id(self, site: str) -> int:
+        site_json = self.read_site_geojson()
+        for feature in site_json["features"]:
+            if feature["properties"]["id"] == site:
+                fmi_station = feature["properties"]["fmisid"]
+                return fmi_station
+
 
 def csv_files(files):
     return [f for f in files if f.endswith(".csv")]

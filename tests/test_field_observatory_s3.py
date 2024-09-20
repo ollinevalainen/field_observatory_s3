@@ -66,3 +66,8 @@ class TestFOBucket:
         df = fo_bucket.get_site_timeseries_data("ki", "fmimeteo")
         assert isinstance(df, pd.DataFrame) == True
         assert df.empty == False
+
+    def test_get_site_fmi_weather_station_id(self):
+        fo_bucket = FOBucket()
+        station_id = fo_bucket.get_site_fmi_weather_station_id("ki")
+        assert station_id == 100967
